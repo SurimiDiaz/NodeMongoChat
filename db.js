@@ -1,3 +1,4 @@
+require("dotenv").config();
 const db = require("mongoose");
 const { DB_USER, DB_PASSWORD } = process.env;
 

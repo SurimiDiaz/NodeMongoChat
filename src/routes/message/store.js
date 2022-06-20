@@ -1,5 +1,3 @@
-require("dotenv").config();
-
 const Model = require("./model.js");
 
 module.exports = {
@@ -7,16 +5,25 @@ module.exports = {
     const myMessage = new Model(message); //nueva clase del modelo
     myMessage.save();
   },
-  getMessage: async (filterUser) => {
-    const query = {};
-    //filtros
-    if (filterUser) {
-      query.user = new RegExp(filterUser, "i");
-    }
-    //traer todos los mensajes
-    const messages = await Model.find(query);
+  getMessage: (filterUser) => {
+    return new Promise((resolve, reject) => {
+      const query = {};
 
-    return messages;
+      //filtros
+      if (filterUser) {
+        query.user = new RegExp(filterUser, "i");
+      }
+      //traer todos los mensajes
+      const messages = Model.find(query)
+        //para relacionar a los users con los mensajes
+        .populate("user")
+        .exec((error, populated) => {
+          if (error) {
+            return reject(error);
+          }
+          resolve(populated);
+        });
+    });
   },
 
   updateText: async (id, newMessage) => {
