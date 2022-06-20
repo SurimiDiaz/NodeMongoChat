@@ -2,18 +2,22 @@
 
 const express = require("express");
 const router = express.Router();
-// const { showDiets } = require("./diet_module");
+const { addMessage, getHystori } = require("./controller.js");
 
-// router.get("/", async (req, res) => {
-//   try {
-//     return res.json(await showDiets());
-//   } catch (error) {
-//     return res.status(404).send(error.message);
-//   }
-// });
+router.post("/", (req, res) => {
+  const { user, message } = req.body;
+  addMessage(user, message)
+    .then((result) => res.send(result))
+    .catch((err) => res.status(404).send(err));
+});
 
 router.get("/", (req, res) => {
-  res.send("Hola desde message");
+  getHystori()
+    .then((result) => res.send(result))
+    .catch((err) => {
+      console.error(err);
+      res.status(404).json({ message: err });
+    });
 });
 
 module.exports = router;
