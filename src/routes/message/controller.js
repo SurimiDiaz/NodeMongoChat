@@ -1,5 +1,10 @@
 // La logica del componente, como diet_module en la PI
-const store = require("./store.js");
+const {
+  addMessage,
+  getMessage,
+  updateText,
+  deleteMessage,
+} = require("./store.js");
 module.exports = {
   addMessage: (user, message) => {
     return new Promise((resolve, reject) => {
@@ -11,15 +16,32 @@ module.exports = {
         message: message,
         date: new Date(),
       };
-      store.addMessage(fullMessage);
+      addMessage(fullMessage);
 
       return resolve("Mensaje enviado!");
     });
   },
 
-  getHystori: () => {
+  getHystori: (filterUser) => {
     return new Promise((resolve, reject) => {
-      return resolve(store.getMessage());
+      return resolve(getMessage(filterUser));
+    });
+  },
+
+  updateMessage: (id, newMessage) => {
+    return new Promise((resolve, reject) => {
+      if (!id || !newMessage) {
+        return reject("Pedido invalido");
+      }
+      return resolve(updateText(id, newMessage));
+    });
+  },
+
+  killMessage: (id) => {
+    return new Promise((resolve, reject) => {
+      if (!id) return reject("Falta id");
+
+      return resolve(deleteMessage(id));
     });
   },
 };
